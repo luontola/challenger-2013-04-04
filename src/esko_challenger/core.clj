@@ -8,6 +8,15 @@
             [clj-json.core :as json])
   (:import [org.slf4j LoggerFactory Logger]))
 
+(defn divisible? [n div] (= 0 (mod n div)))
+
+(defn fizzbuzz [n]
+  (cond
+    (and (divisible? n 3) (divisible? n 5)) "FizzBuzz"
+    (divisible? n 3) "Fizz"
+    (divisible? n 5) "Buzz"
+    :else (str n)))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
@@ -15,6 +24,7 @@
       (= op "say-hello") (str "Hello " (first args))
       (= op "+") (str (+ (Integer/parseInt (first args)) (Integer/parseInt (second args))))
       (= op "-") (str (- (Integer/parseInt (first args)) (Integer/parseInt (second args))))
+      (= op "fizzbuzz") (fizzbuzz (Integer/parseInt (first args)))
       :else nil)))
 
 (defn make-routes []

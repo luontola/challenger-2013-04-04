@@ -13,3 +13,10 @@
 
 (deftest minus-test
   (is (= "-4" (core/answer ["-" "3" "7"]))))
+
+(deftest fizzbuzz-test
+  (is (= "1" (core/answer ["fizzbuzz" "1"])))
+  (is (= "2" (core/answer ["fizzbuzz" "2"])))
+  (is (= "Fizz" (core/answer ["fizzbuzz" "3"])))
+  (is (= "Buzz" (core/answer ["fizzbuzz" "5"])))
+  (is (= "FizzBuzz" (core/answer ["fizzbuzz" "15"]))))
