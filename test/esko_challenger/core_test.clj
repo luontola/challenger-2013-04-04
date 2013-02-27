@@ -7,3 +7,6 @@
 
 (deftest say-hello-test
   (is (= "Hello World" (core/answer ["say-hello" "World"]))))
+
+(deftest plus-test
+  (is (= "10" (core/answer ["+" "3" "7"]))))
