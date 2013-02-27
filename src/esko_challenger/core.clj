@@ -22,8 +22,8 @@
     (cond
       (= op "ping") "pong"
       (= op "say-hello") (str "Hello " (first args))
-      (= op "+") (str (+ (Integer/parseInt (first args)) (Integer/parseInt (second args))))
-      (= op "-") (str (- (Integer/parseInt (first args)) (Integer/parseInt (second args))))
+      (= op "+") (str (apply + (map #(Integer/parseInt %) args)))
+      (= op "-") (str (apply - (map #(Integer/parseInt %) args)))
       (= op "fizzbuzz") (fizzbuzz (Integer/parseInt (first args)))
       :else nil)))
 
