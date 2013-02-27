@@ -6,7 +6,23 @@
             [net.cgrand.enlive-html :as html]
             [clojure.string :as string]
             [clj-json.core :as json])
-  (:import [org.slf4j LoggerFactory Logger]))
+  (:import [org.slf4j LoggerFactory Logger]
+           [java.util.concurrent Executors ExecutorService TimeUnit]))
+
+(defonce executor (Executors/newCachedThreadPool))
+
+(defn wrap-non-nil [f]
+  (fn []
+    (let [result (f)]
+      (if (nil? result)
+        (throw (NullPointerException.)))
+      result)))
+
+(defn first-success [commands]
+  (try
+    (.invokeAny executor (map wrap-non-nil commands) 500 TimeUnit/MILLISECONDS)
+    (catch Exception e
+      nil)))
 
 (defn ask-proxies [question low-port high-port]
   nil) ; TODO
