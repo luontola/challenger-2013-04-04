@@ -21,6 +21,10 @@
   (let [s (.toLowerCase (clojure.string/replace s #"\W" ""))]
     (= s (apply str (reverse s)))))
 
+(def fibs (lazy-cat [(bigint 0) (bigint 1)] (map + fibs (rest fibs))))
+
+(defn fibonacci [n] (nth fibs n))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
@@ -30,6 +34,7 @@
       (= op "-") (str (apply - (map #(Integer/parseInt %) args)))
       (= op "fizzbuzz") (fizzbuzz (Integer/parseInt (first args)))
       (= op "palindrome?") (str (palindrome? (first args)))
+      (= op "fibonacci") (str (fibonacci (Integer/parseInt (first args))))
       :else nil)))
 
 (defn make-routes []
