@@ -25,6 +25,9 @@
 
 (defn fibonacci [n] (nth fibs n))
 
+(defn nth-word [n words]
+  (nth (.split words "\\W+") (dec n)))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
@@ -35,6 +38,7 @@
       (= op "fizzbuzz") (fizzbuzz (Integer/parseInt (first args)))
       (= op "palindrome?") (str (palindrome? (first args)))
       (= op "fibonacci") (str (fibonacci (Integer/parseInt (first args))))
+      (= op "nth-word") (nth-word (Integer/parseInt (first args)) (clojure.string/join " " (rest args)))
       :else nil)))
 
 (defn make-routes []
