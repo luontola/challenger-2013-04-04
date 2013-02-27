@@ -20,3 +20,8 @@
   (is (= "Fizz" (core/answer ["fizzbuzz" "3"])))
   (is (= "Buzz" (core/answer ["fizzbuzz" "5"])))
   (is (= "FizzBuzz" (core/answer ["fizzbuzz" "15"]))))
+
+(deftest palindrome?-test
+  (is (= "true" (core/answer ["palindrome?" "innostunutsonni"])))
+  (is (= "false" (core/answer ["palindrome?" "passiivinensonni"])))
+  (is (= "true" (core/answer ["palindrome?" "Tiku, Matti maalasi salaa mittamukit."]))))

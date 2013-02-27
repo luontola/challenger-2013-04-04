@@ -17,6 +17,10 @@
     (divisible? n 5) "Buzz"
     :else (str n)))
 
+(defn palindrome? [s]
+  (let [s (.toLowerCase (clojure.string/replace s #"\W" ""))]
+    (= s (apply str (reverse s)))))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
@@ -25,6 +29,7 @@
       (= op "+") (str (apply + (map #(Integer/parseInt %) args)))
       (= op "-") (str (apply - (map #(Integer/parseInt %) args)))
       (= op "fizzbuzz") (fizzbuzz (Integer/parseInt (first args)))
+      (= op "palindrome?") (str (palindrome? (first args)))
       :else nil)))
 
 (defn make-routes []
