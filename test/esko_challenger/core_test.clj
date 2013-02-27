@@ -41,3 +41,6 @@
   (is (= "bar" (core/answer ["nth-word" "2" "foo bar"])))
   (is (= "bar" (core/answer ["nth-word" "2" "foo" "bar"])))
   (is (= "bar" (core/answer ["nth-word" "2" "foo bar."]))))
+
+(deftest sort-test
+  (is (= "-83, -58, 16, 73" (core/answer ["sort" "16" "-83" "-58" "73"]))))

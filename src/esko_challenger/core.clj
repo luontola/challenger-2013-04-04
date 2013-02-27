@@ -4,7 +4,7 @@
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
             [net.cgrand.enlive-html :as html]
-            [clojure.string :as string]
+            [clojure.string :as str]
             [clj-json.core :as json])
   (:import [org.slf4j LoggerFactory Logger]))
 
@@ -18,7 +18,7 @@
     :else (str n)))
 
 (defn palindrome? [s]
-  (let [s (.toLowerCase (clojure.string/replace s #"\W" ""))]
+  (let [s (.toLowerCase (str/replace s #"\W" ""))]
     (= s (apply str (reverse s)))))
 
 (def fibs (lazy-cat [(bigint 0) (bigint 1)] (map + fibs (rest fibs))))
@@ -38,13 +38,14 @@
       (= op "fizzbuzz") (fizzbuzz (Integer/parseInt (first args)))
       (= op "palindrome?") (str (palindrome? (first args)))
       (= op "fibonacci") (str (fibonacci (Integer/parseInt (first args))))
-      (= op "nth-word") (nth-word (Integer/parseInt (first args)) (clojure.string/join " " (rest args)))
+      (= op "nth-word") (nth-word (Integer/parseInt (first args)) (str/join " " (rest args)))
+      (= op "sort") (str/join ", " (sort (map #(Integer/parseInt %) args)))
       :else nil)))
 
 (defn make-routes []
   (->
     (routes
-      (POST "/" {body :body} (answer (string/split-lines (slurp body))))
+      (POST "/" {body :body} (answer (str/split-lines (slurp body))))
       (GET "/" [] "It's me, Mario!")
       (route/not-found "404 Page Not Found"))
     (handler/site)))
