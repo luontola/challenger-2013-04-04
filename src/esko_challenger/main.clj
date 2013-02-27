@@ -15,7 +15,7 @@
         (+ 1 (:port options))
         (+ 10 (:port options)))
       (core/make-routes))
-    (wrap-reload)
+    ;(wrap-reload)
     (wrap-stacktrace)))
 
 (defn run [options]
