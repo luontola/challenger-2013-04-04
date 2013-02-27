@@ -10,3 +10,6 @@
 
 (deftest plus-test
   (is (= "10" (core/answer ["+" "3" "7"]))))
+
+(deftest minus-test
+  (is (= "-4" (core/answer ["-" "3" "7"]))))
