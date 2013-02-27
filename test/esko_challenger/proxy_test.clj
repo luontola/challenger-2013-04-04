@@ -24,3 +24,7 @@
   (testing "Returns nil if there are no successful responses"
     (let [response (proxy/first-success [(fast nil)])]
       (is (nil? response)))))
+
+(deftest backend-urls-test
+  (is (= ["http://localhost:1000"] (proxy/backend-urls 1000 1000)))
+  (is (= ["http://localhost:1000" "http://localhost:1001" "http://localhost:1002"] (proxy/backend-urls 1000 1002))))

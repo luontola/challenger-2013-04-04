@@ -1,7 +1,8 @@
 (ns esko-challenger.proxy
   (:use ring.util.response
         compojure.core)
-  (:require [compojure.route :as route]
+  (:require [esko-challenger.http :as http]
+            [compojure.route :as route]
             [compojure.handler :as handler]
             [net.cgrand.enlive-html :as html]
             [clojure.string :as string]
@@ -24,13 +25,28 @@
     (catch Exception e
       nil)))
 
+(defn ask-backend [url question]
+  (let [response (http/post-request url question)
+        status-code (:code (:status response))]
+    (if (= 200 status-code)
+      (:body response)
+      nil)))
+
+(defn make-asker [url question]
+  (fn [] (ask-backend url question)))
+
+(defn backend-urls [low-port high-port]
+  (map #(str "http://localhost:" %) (range low-port (inc high-port))))
+
 (defn ask-proxies [question low-port high-port]
-  nil) ; TODO
+  (let [urls (backend-urls low-port high-port)
+        commands (map #(make-asker % question) urls)]
+    (first-success commands)))
 
 (defn make-routes [low-port high-port]
   (->
     (routes
       (POST "/" {body :body} (ask-proxies (slurp body) low-port high-port))
       (GET "/" [] (str "I'm proxying " low-port "-" high-port))
-      (route/not-found "404 Page Not Found"))
+      (route/not-found "404 Backends Did Not Know"))
     (handler/site)))
