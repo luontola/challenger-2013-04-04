@@ -2,7 +2,5 @@
   (:use clojure.test)
   (:require [esko-challenger.core :as core]))
 
-(deftest dummy-test
-
-  (testing "Foo"
-    (is (= 1 1))))
+(deftest ping-test
+  (is (= "pong" (core/answer ["ping"]))))

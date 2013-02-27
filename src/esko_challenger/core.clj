@@ -8,10 +8,16 @@
             [clj-json.core :as json])
   (:import [org.slf4j LoggerFactory Logger]))
 
+(defn answer [question]
+  (let [[op & args] question]
+    (cond
+      (= op "ping") "pong"
+      :else nil)))
+
 (defn make-routes []
   (->
     (routes
-      (POST "/" {body :body} (slurp body))
+      (POST "/" {body :body} (answer (string/split-lines (slurp body))))
       (GET "/" [] "It's me, Mario!")
       (route/not-found "404 Page Not Found"))
     (handler/site)))
