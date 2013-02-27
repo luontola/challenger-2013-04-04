@@ -4,3 +4,6 @@
 
 (deftest ping-test
   (is (= "pong" (core/answer ["ping"]))))
+
+(deftest say-hello-test
+  (is (= "Hello World" (core/answer ["say-hello" "World"]))))

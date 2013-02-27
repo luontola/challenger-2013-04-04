@@ -2,6 +2,7 @@
   (:use [clojure.tools.cli :only [cli]]
         ring.adapter.jetty
         ring.middleware.file
+        ring.middleware.reload
         ring.middleware.stacktrace)
   (:require [esko-challenger.core :as core]
             [esko-challenger.proxy :as proxy])
@@ -14,6 +15,7 @@
         (+ 1 (:port options))
         (+ 10 (:port options)))
       (core/make-routes))
+    (wrap-reload)
     (wrap-stacktrace)))
 
 (defn run [options]

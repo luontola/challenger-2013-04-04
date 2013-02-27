@@ -12,6 +12,7 @@
   (let [[op & args] question]
     (cond
       (= op "ping") "pong"
+      (= op "say-hello") (str "Hello " (first args))
       :else nil)))
 
 (defn make-routes []
