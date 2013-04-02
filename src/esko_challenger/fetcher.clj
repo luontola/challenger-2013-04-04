@@ -1,6 +1,9 @@
 (ns esko-challenger.fetcher
-  (:require [net.cgrand.enlive-html :as html]
-            [clojure.string :as str]))
+  (:require [esko-challenger.cache :as cache]
+            [net.cgrand.enlive-html :as html]
+            [clojure.string :as str])
+  (:import [org.slf4j LoggerFactory Logger]
+           [java.net URL]))
 
 
 ; parsing challenger pages
@@ -32,3 +35,31 @@
   (let [table (first (html/select (html/html-resource overview-page) [:table#participants ]))
         links (html/select table [:a ])]
     (map #(:href (:attrs %)) links)))
+
+
+; background poller thread
+
+(def logger (LoggerFactory/getLogger (str (ns-name *ns*))))
+
+(defn fetch-answers [challenger-url cache]
+  (let [challenger-url (URL. challenger-url)]
+
+    (.info logger "Locating participants from {}" challenger-url)
+    (let [participants (parse-participans challenger-url)
+          participants (map #(URL. challenger-url %) participants)]
+
+      (doseq [participant participants]
+        (.info logger "Fetching strikes from {}" participant)
+        (doseq [[question answer] (seq (parse-strikes participant))]
+          (cache/learn cache question answer))))))
+
+(defn- infinite-loop [f]
+  (while (not (Thread/interrupted))
+    (try
+      (f)
+      (catch Throwable t
+        (.warn logger "Uncaught exception" t)))))
+
+(defn start [challenger-url cache]
+  (let [poller #(fetch-answers challenger-url cache)]
+    (.start (Thread. #(infinite-loop poller) "answer-fetcher"))))

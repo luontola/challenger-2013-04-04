@@ -13,5 +13,3 @@
   (let [page (File. "test/tournament-overview.html")
         participans (fetcher/parse-participans page)]
     (is (= participans ["/participant-1" "/participant-2"]))))
-
-; TODO: background poller thread

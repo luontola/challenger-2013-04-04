@@ -47,6 +47,7 @@
     (write-file (answer-path dir question) answer)))
 
 (defn filesystem-answers [dir]
+  (.mkdirs (File. dir))
   (FileSystemAnswers. dir))
 
 
