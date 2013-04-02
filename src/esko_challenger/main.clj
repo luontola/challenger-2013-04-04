@@ -4,7 +4,7 @@
         ring.middleware.file
         ring.middleware.reload
         ring.middleware.stacktrace)
-  (:require [esko-challenger.core :as core])
+  (:require [esko-challenger.cache :as cache])
   (:gen-class ))
 
 (defn wrap-if [handler pred wrapper & args]
@@ -14,7 +14,7 @@
 
 (defn make-webapp [options]
   (->
-    (core/make-routes)
+    (cache/make-routes)
     (wrap-if (:reload options) wrap-reload)
     (wrap-stacktrace)))
 
