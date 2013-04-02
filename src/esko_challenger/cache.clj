@@ -9,13 +9,11 @@
   (:import [org.slf4j LoggerFactory Logger]
            [java.io File]))
 
-
-; persistence
-
 (defprotocol Answers
   (recall [this question])
   (learn [this question answer]))
 
+; InMemoryAnswers
 
 (deftype InMemoryAnswers [answers]
   Answers
@@ -26,6 +24,8 @@
   ([] (in-memory-answers {}))
   ([answers-map] (InMemoryAnswers. (ref answers-map))))
 
+
+; FileSystemAnswers
 
 (defn- read-file [^File file]
   (if (.exists file)
@@ -49,6 +49,8 @@
 (defn filesystem-answers [^File dir]
   (.mkdirs dir)
   (FileSystemAnswers. dir))
+
+; TODO: database-backed Answers (MongoDB, Memcached, Datomic or similar)
 
 
 ; routing
