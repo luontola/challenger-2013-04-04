@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Participant Details</title>
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/jquery.dateFormat.js" type="text/javascript"></script>
+    <script src="js/jquery.flot.js" type="text/javascript"></script>
+    <script src="js/jquery.flot.stack.js" type="text/javascript"></script>
+    <script src="js/challenger.js" type="text/javascript"></script>
+    <!-- TODO: should be within overall-scores.html snippet -->
+    <script src="js/overall-score-stats.js" type="text/javascript"></script>
+</head>
+<body>
+
+<section>
+    <hr class="decorative-border" />
+
+    <h1>/dev/tasting/raspberry</h1>
+
+    <h2>Participant Details</h2>
+
+    
+
+    
+
+<div class="navigation">
+    <a href="/">Back to Overview</a><br />
+    <a href="#failures">Recent Failed Challenges</a><br />
+    <a href="#challenges">Recent Challenges</a><br />
+    <a href="#rounds">Recent Finished Rounds</a>
+</div>
+
+<table>
+    <tr>
+        <th style="text-align: left">Display Name</th>
+        <td id="name">localhost</td>
+    </tr>
+    <tr>
+        <th style="text-align: left">Service URL</th>
+        <td id="url">http://192.168.7.117:8080/hello-world</td>
+    </tr>
+    <tr>
+        <th style="text-align: left">Score</th>
+        <td id="score">0</td>
+    </tr>
+    <tr>
+        <th style="text-align: left">Velocity</th>
+        <td id="velocity">0/0</td>
+    </tr>
+</table>
+
+<div data-url="/participant-1/score-history" style="width: 100%; height: 250px;" class="score-history"></div>
+
+<h2><a name="failures"></a>Recent Failed Challenges</h2>
+
+<table class="strikes">
+    <tr>
+        <th>Time</th>
+        <th>Price</th>
+        <th>Input</th>
+        <th>Expected</th>
+        <th>Actual</th>
+        <th>Status</th>
+    </tr>
+    
+    
+    
+</table>
+
+<h2><a name="challenges"></a>Recent Challenges</h2>
+
+<table class="strikes">
+    <tr>
+        <th>Time</th>
+        <th>Price</th>
+        <th>Input</th>
+        <th>Expected</th>
+        <th>Actual</th>
+        <th>Status</th>
+    </tr>
+    <tr class="hit">
+        <td>2013-04-02T16:28:44.282</td>
+        <td>0</td>
+        <td>ping</td>
+        <td>pong</td>
+        <td>pong</td>
+        <td>200 OK</td>
+    </tr><tr class="miss">
+        <td>2013-04-02T16:28:44.270</td>
+        <td>0</td>
+        <td>the question</td>
+        <td>the expected answer</td>
+        <td>the actual answer</td>
+        <td>200 OK</td>
+    </tr><tr class="hit">
+        <td>2013-04-02T16:28:44.258</td>
+        <td>0</td>
+        <td>ping</td>
+        <td>pong</td>
+        <td>pong</td>
+        <td>200 OK</td>
+    </tr>
+    
+</table>
+
+<h2><a name="rounds"></a>Recent Finished Rounds</h2>
+
+<table class="strikes">
+    <tr>
+        <th>Time</th>
+        <th>Price</th>
+        <th>Input</th>
+        <th>Expected</th>
+        <th>Actual</th>
+        <th>Status</th>
+    </tr>
+    <tr class="hit">
+        <td>2013-04-02T16:27:58.845</td>
+        <td>0</td>
+        <td>ping</td>
+        <td>pong</td>
+        <td>pong</td>
+        <td>200 OK</td>
+    </tr>
+    
+    
+</table>
+
+
+
+    <div class="push"></div>
+</section>
+
+<footer>
+    <img alt="Solita" src="img/solita-logo.png" />
+</footer>
+
+</body>
+
+</html>
