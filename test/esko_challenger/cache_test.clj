@@ -1,6 +1,13 @@
 (ns esko-challenger.cache-test
   (:use clojure.test)
-  (:require [esko-challenger.cache :as cache]))
+  (:require [esko-challenger.cache :as cache]
+            [me.raynes.fs :as fs]))
+
+(defn- unique-subdir [dir]
+  (let [subdir (fs/file dir (str (rand-int Integer/MAX_VALUE)))]
+    (fs/mkdir subdir)
+    subdir))
+
 
 (deftest unknown-question-test
   (is (nil? (cache/answer "question" (cache/in-memory-answers)))))
@@ -21,3 +28,10 @@
 
 (deftest in-memory-answers-test
   (answers-contract cache/in-memory-answers))
+
+(deftest filesystem-answers-test
+  (let [tmpdir (fs/temp-dir "filesystem-answers-test")]
+    (try
+      (answers-contract #(cache/filesystem-answers (unique-subdir tmpdir)))
+      (finally
+        (fs/delete-dir tmpdir)))))
