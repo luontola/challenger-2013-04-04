@@ -27,27 +27,27 @@
   ([answers-map] (InMemoryAnswers. (ref answers-map))))
 
 
-(defn- read-file [file]
+(defn- read-file [^File file]
   (if (.exists file)
     (slurp file :encoding "UTF-8")
     nil))
 
-(defn- write-file [file content]
+(defn- write-file [^File file ^String content]
   (if (not (= content (read-file file)))
     (spit file content :encoding "UTF-8")))
 
-(defn- answer-path [dir question]
+(defn- answer-path [^File dir ^String question]
   (File. dir (digest/md5 question)))
 
-(deftype FileSystemAnswers [dir]
+(deftype FileSystemAnswers [^File dir]
   Answers
   (recall [this question]
     (read-file (answer-path dir question)))
   (learn [this question answer]
     (write-file (answer-path dir question) answer)))
 
-(defn filesystem-answers [dir]
-  (.mkdirs (File. dir))
+(defn filesystem-answers [^File dir]
+  (.mkdirs dir)
   (FileSystemAnswers. dir))
 
 

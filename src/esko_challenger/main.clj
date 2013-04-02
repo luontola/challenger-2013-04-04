@@ -6,6 +6,8 @@
         ring.middleware.stacktrace)
   (:require [esko-challenger.cache :as cache]
             [esko-challenger.fetcher :as fetcher])
+  (:import [java.io File]
+           [java.net URL])
   (:gen-class ))
 
 (defn wrap-if [handler pred wrapper & args]
@@ -14,8 +16,8 @@
     handler))
 
 (defn make-webapp [options]
-  (let [answers (cache/filesystem-answers "answer-cache")]
-    (fetcher/start (:challenger-url options) answers)
+  (let [answers (cache/filesystem-answers (File. "answer-cache"))]
+    (fetcher/start (URL. (:challenger-url options)) answers)
     (->
       (cache/make-routes answers)
       (wrap-if (:reload options) wrap-reload)

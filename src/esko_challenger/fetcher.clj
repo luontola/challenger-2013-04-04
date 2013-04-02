@@ -41,17 +41,15 @@
 
 (def logger (LoggerFactory/getLogger (str (ns-name *ns*))))
 
-(defn fetch-answers [challenger-url cache]
-  (let [challenger-url (URL. challenger-url)]
+(defn fetch-answers [^URL challenger-url cache]
+  (.info logger "Locating participants from {}" challenger-url)
+  (let [participants (parse-participans challenger-url)
+        participants (map #(URL. challenger-url %) participants)]
 
-    (.info logger "Locating participants from {}" challenger-url)
-    (let [participants (parse-participans challenger-url)
-          participants (map #(URL. challenger-url %) participants)]
-
-      (doseq [participant participants]
-        (.info logger "Fetching strikes from {}" participant)
-        (doseq [[question answer] (seq (parse-strikes participant))]
-          (cache/learn cache question answer))))))
+    (doseq [participant participants]
+      (.info logger "Fetching strikes from {}" participant)
+      (doseq [[question answer] (seq (parse-strikes participant))]
+        (cache/learn cache question answer)))))
 
 (defn- infinite-loop [f]
   (while (not (Thread/interrupted))
@@ -60,6 +58,6 @@
       (catch Throwable t
         (.warn logger "Uncaught exception" t)))))
 
-(defn start [challenger-url cache]
+(defn start [^URL challenger-url cache]
   (let [poller #(fetch-answers challenger-url cache)]
     (.start (Thread. #(infinite-loop poller) "answer-fetcher"))))
