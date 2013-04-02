@@ -4,17 +4,14 @@
         ring.middleware.file
         ring.middleware.reload
         ring.middleware.stacktrace)
-  (:require [esko-challenger.core :as core]
-            [esko-challenger.proxy :as proxy])
+  (:require [esko-challenger.proxy :as proxy])
   (:gen-class ))
 
 (defn make-webapp [options]
   (->
-    (if (:proxy options)
-      (proxy/make-routes
-        (+ 1 (:port options))
-        (+ 10 (:port options)))
-      (core/make-routes))
+    (proxy/make-routes
+      (:low-port options)
+      (:high-port options))
     ;(wrap-reload)
     (wrap-stacktrace)))
 
@@ -26,8 +23,9 @@
 
 (defn -main [& args]
   (let [[options args banner] (cli args
-    ["--port" "Port for the HTTP server to listen to" :default 8080 :parse-fn #(Integer. %)]
-    ["--proxy" "Start in proxy mode" :flag true]
+    ["--port" "Port for this HTTP proxy to listen to" :default 8080 :parse-fn #(Integer. %)]
+    ["--low-port" "First backend server port" :default 8090 :parse-fn #(Integer. %)]
+    ["--high-port" "Last backend server port" :default 8099 :parse-fn #(Integer. %)]
     ["--help" "Show this help" :flag true])]
     (when (:help options)
       (println banner)

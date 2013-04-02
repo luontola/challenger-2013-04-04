@@ -48,5 +48,5 @@
     (routes
       (POST "/" {body :body} (ask-proxies (slurp body) low-port high-port))
       (GET "/" [] (str "I'm proxying " low-port "-" high-port))
-      (route/not-found "404 Backends Did Not Know"))
+      (route/not-found "Answer Not Known"))
     (handler/site)))
