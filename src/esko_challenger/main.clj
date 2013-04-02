@@ -14,7 +14,7 @@
 
 (defn make-webapp [options]
   (->
-    (cache/make-routes)
+    (cache/make-routes (cache/in-memory-answers))
     (wrap-if (:reload options) wrap-reload)
     (wrap-stacktrace)))
 
