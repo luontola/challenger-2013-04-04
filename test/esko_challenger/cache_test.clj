@@ -8,6 +8,13 @@
     (fs/mkdir subdir)
     subdir))
 
+(defmacro with-temp-dir [var-name & body]
+  `(let [~var-name (fs/temp-dir "test")]
+     (try
+       ~@body
+       (finally
+         (fs/delete-dir ~var-name)))))
+
 
 (deftest unknown-question-test
   (is (nil? (cache/answer "question" (cache/in-memory-answers)))))
@@ -18,20 +25,17 @@
 
 (defn answers-contract [answers-factory]
   (let [answers (answers-factory)]
-    (cache/learn answers "question 1" "answer 1")
+    (cache/learn answers "known question" "known answer")
 
     (testing "Does not recall unknown answers"
-      (is (nil? (cache/recall answers "question 2"))))
+      (is (nil? (cache/recall answers "unknown question"))))
 
     (testing "Recalls previously learned answers"
-      (is (= "answer 1" (cache/recall answers "question 1"))))))
+      (is (= "known answer" (cache/recall answers "known question"))))))
 
 (deftest in-memory-answers-test
   (answers-contract cache/in-memory-answers))
 
 (deftest filesystem-answers-test
-  (let [tmpdir (fs/temp-dir "filesystem-answers-test")]
-    (try
-      (answers-contract #(cache/filesystem-answers (unique-subdir tmpdir)))
-      (finally
-        (fs/delete-dir tmpdir)))))
+  (with-temp-dir tmpdir
+    (answers-contract #(cache/filesystem-answers (unique-subdir tmpdir)))))

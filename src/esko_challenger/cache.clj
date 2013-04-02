@@ -27,9 +27,6 @@
   ([answers-map] (InMemoryAnswers. (ref answers-map))))
 
 
-(defn- answer-path [dir question]
-  (File. dir (digest/md5 question)))
-
 (defn- read-file [file]
   (if (.exists file)
     (slurp file :encoding "UTF-8")
@@ -38,6 +35,9 @@
 (defn- write-file [file content]
   (if (not (= content (read-file file)))
     (spit file content :encoding "UTF-8")))
+
+(defn- answer-path [dir question]
+  (File. dir (digest/md5 question)))
 
 (deftype FileSystemAnswers [dir]
   Answers
