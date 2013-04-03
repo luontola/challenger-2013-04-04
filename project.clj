@@ -21,6 +21,9 @@
                  [http.async.client "0.5.0"]
                  [com.ning/async-http-client "1.7.8"]
 
+                 ; Database
+                 [com.datomic/datomic-free "0.8.3862" :exclusions [org.slf4j/slf4j-nop]]
+
                  ; Logging
                  [ch.qos.logback/logback-classic "1.0.7"]
 

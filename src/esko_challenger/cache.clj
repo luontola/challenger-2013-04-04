@@ -1,6 +1,7 @@
 (ns esko-challenger.cache
   (:use ring.util.response
-        compojure.core)
+        compojure.core
+        [datomic.api :only [db q] :as d])
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
             [net.cgrand.enlive-html :as html]
@@ -50,7 +51,42 @@
   (.mkdirs dir)
   (FileSystemAnswers. dir))
 
-; TODO: database-backed Answers (MongoDB, Memcached, Datomic or similar)
+
+; DatomicAnswers
+
+(deftype DatomicAnswers [conn]
+  Answers
+  (recall [this question]
+    (first (first
+             (q '[:find ?answer
+                  :in $ ?question
+                  :where
+                  [?c :challenge/answer ?answer]
+                  [?c :challenge/question ?question]]
+         (db conn)
+         question))))
+  (learn [this question answer]
+    (d/transact conn [{:db/id #db/id[:db.part/user]
+                       :challenge/question question
+                       :challenge/answer answer}])))
+
+(defn datomic-answers [conn-uri]
+  (if (d/create-database conn-uri)
+    (let [conn (d/connect conn-uri)]
+      (d/transact conn [{:db/id #db/id[:db.part/db]
+                        :db/ident :challenge/question
+                        :db/valueType :db.type/string
+                        :db/cardinality :db.cardinality/one
+                        :db/doc "A challenge's question"
+                        :db.install/_attribute :db.part/db}
+
+                        {:db/id #db/id[:db.part/db]
+                        :db/ident :challenge/answer
+                        :db/valueType :db.type/string
+                        :db/cardinality :db.cardinality/one
+                        :db/doc "A challenge's answer"
+                        :db.install/_attribute :db.part/db}])))
+  (DatomicAnswers. (d/connect conn-uri)))
 
 
 ; routing

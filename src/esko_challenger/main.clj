@@ -16,7 +16,10 @@
     handler))
 
 (defn make-webapp [options]
-  (let [answers (cache/filesystem-answers (File. "answer-cache"))]
+  (let [answers
+        (if (:datomic-uri options)
+          (cache/datomic-answers (:datomic-uri options))
+          (cache/filesystem-answers (File. (:cache-dir options))))]
     (fetcher/start (URL. (:challenger-url options)) answers)
     (->
       (cache/make-routes answers)
@@ -32,6 +35,8 @@
 (defn -main [& args]
   (let [[options args banner] (cli args
     ["--challenger-url" "Base URL of the Challenger server (required)"]
+    ["--datomic-uri" "Connection URI for Datomic database"]
+    ["--cache-dir" "Directory path when using flat files for persistence" :default "answers-cache"]
     ["--port" "Port for the HTTP server to listen to" :default 8080 :parse-fn #(Integer. %)]
     ["--reload" "Reload changes to sources automatically" :flag true]
     ["--help" "Show this help" :flag true])]

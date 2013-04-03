@@ -39,3 +39,6 @@
 (deftest filesystem-answers-test
   (with-temp-dir tmpdir
     (answers-contract #(cache/filesystem-answers (unique-subdir tmpdir)))))
+
+(deftest datomic-answers-test
+  (answers-contract #(cache/datomic-answers "datomic:mem://test")))
