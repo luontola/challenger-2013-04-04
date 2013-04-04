@@ -71,14 +71,15 @@
 (defn datomic-answers [conn-uri]
   (if (d/create-database conn-uri)
     (let [conn (d/connect conn-uri)]
-      (d/transact conn [{:db/id #db/id[:db.part/db]
+      (d/transact conn [{:db/id #db/id[:db.part/db -1]
                         :db/ident :challenge/question
                         :db/valueType :db.type/string
                         :db/unique :db.unique/identity
                         :db/cardinality :db.cardinality/one
                         :db/doc "A challenge's question"
-                        :db.install/_attribute :db.part/db}])
-      (d/transact conn [{:db/id #db/id[:db.part/db]
+                        :db.install/_attribute :db.part/db}
+
+                         {:db/id #db/id[:db.part/db -2]
                         :db/ident :challenge/answer
                         :db/valueType :db.type/string
                         :db/cardinality :db.cardinality/one
