@@ -10,3 +10,9 @@
 
 (deftest minus-test
   (is (= "-4" (core/answer ["-" "3" "7"]))))
+
+(deftest nth-word-test
+  (is (= "true" (core/answer ["palindrome?" "aba"])))
+  (is (= "true" (core/answer ["palindrome?" "abba"])))
+  (is (= "false" (core/answer ["palindrome?" "abc"])))
+  (is (= "true" (core/answer ["palindrome?" "A bba."]))))

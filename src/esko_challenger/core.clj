@@ -7,12 +7,17 @@
             [clojure.string :as str])
   (:import [org.slf4j LoggerFactory Logger]))
 
+(defn palindrome? [word]
+  (let [word (seq (.replaceAll (.toLowerCase word) "[^a-z]" ""))]
+    (= word (reverse word))))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
       (= op "ping") "pong"
       (= op "+") (str (apply + (map #(Integer/parseInt %) args)))
       (= op "-") (str (apply - (map #(Integer/parseInt %) args)))
+      (= op "palindrome?") (str (palindrome? (first args)))
       :else nil)))
 
 (defn make-routes []
