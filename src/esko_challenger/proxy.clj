@@ -35,18 +35,33 @@
 (defn make-asker [url question]
   (fn [] (ask-backend url question)))
 
-(defn backend-urls [low-port high-port]
+(defn local-backend-urls [low-port high-port]
   (map #(str "http://localhost:" %) (range low-port (inc high-port))))
 
-(defn ask-proxies [question low-port high-port]
-  (let [urls (backend-urls low-port high-port)
-        commands (map #(make-asker % question) urls)]
+(defn ask-proxies [question urls]
+  (let [commands (map #(make-asker % question) urls)]
     (first-success commands)))
 
-(defn make-routes [low-port high-port]
+(defn watch-updates [content-fn]
+  (let [content (ref (content-fn))
+        update #(dosync (ref-set content (content-fn)))
+        update-loop #(while true
+                       (try
+                         (update)
+                         (Thread/sleep 5000)
+                         (catch Throwable t
+                           (.printStackTrace t))))]
+    (.start (Thread. update-loop "watch-updates"))
+    content))
+
+(defn make-backend-list-monitor [file]
+  (let [watcher (watch-updates #(string/split-lines (slurp file)))]
+    (fn [] @watcher)))
+
+(defn make-routes [urls-fn]
   (->
     (routes
-      (POST "/" {body :body} (ask-proxies (slurp body) low-port high-port))
-      (GET "/" [] (str "I'm proxying " low-port "-" high-port))
-      (route/not-found "Answer Not Known"))
+      (POST "/" {body :body} (ask-proxies (slurp body) (urls-fn)))
+      (GET "/" [] (str "Proxying:\n" (string/join "\n" (urls-fn))))
+      (route/not-found "No Answer"))
     (handler/site)))
