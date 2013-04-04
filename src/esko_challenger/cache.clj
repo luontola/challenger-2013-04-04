@@ -57,9 +57,10 @@
 (deftype DatomicAnswers [conn]
   Answers
   (recall [this question]
-      (let [results (q '[:find ?answer ?c
+      (let [results (q '[:find ?answer
            :in $ ?question
-           :where [?c :challenge/answer ?answer]
+           :where
+           [?c :challenge/answer ?answer]
            [?c :challenge/question ?question]] (db conn) question)]
         (first (first results))))
   (learn [this question answer]
@@ -76,9 +77,8 @@
                         :db/unique :db.unique/identity
                         :db/cardinality :db.cardinality/one
                         :db/doc "A challenge's question"
-                        :db.install/_attribute :db.part/db}
-
-                        {:db/id #db/id[:db.part/db]
+                        :db.install/_attribute :db.part/db}])
+      (d/transact conn [{:db/id #db/id[:db.part/db]
                         :db/ident :challenge/answer
                         :db/valueType :db.type/string
                         :db/cardinality :db.cardinality/one
