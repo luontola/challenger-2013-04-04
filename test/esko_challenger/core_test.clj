@@ -16,3 +16,6 @@
   (is (= "true" (core/answer ["palindrome?" "abba"])))
   (is (= "false" (core/answer ["palindrome?" "abc"])))
   (is (= "true" (core/answer ["palindrome?" "A bba."]))))
+
+(deftest sort-test
+  (is (= "-45, 0, 28" (core/answer ["sort" "0" "28" "-45"]))))

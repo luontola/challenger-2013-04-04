@@ -21,6 +21,7 @@
       (= op "+") (str (apply + (parse-ints args)))
       (= op "-") (str (apply - (parse-ints args)))
       (= op "palindrome?") (str (palindrome? (first args)))
+      (= op "sort") (str (str/join ", " (sort (parse-ints args))))
       :else nil)))
 
 (defn make-routes []
