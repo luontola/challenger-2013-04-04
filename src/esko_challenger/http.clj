@@ -19,7 +19,7 @@
 (defn ^:dynamic post-request
   [url body]
   (try
-    (-> (http/POST client url :body body :timeout 100)
+    (-> (http/POST client url :body body :timeout 1000)
       http/await
       simple-http-response)
     (catch InterruptedException e

@@ -21,7 +21,7 @@
 
 (defn first-success [commands]
   (try
-    (.invokeAny executor (map wrap-non-nil commands) 500 TimeUnit/MILLISECONDS)
+    (.invokeAny executor (map wrap-non-nil commands) 900 TimeUnit/MILLISECONDS)
     (catch Exception e
       nil)))
 
