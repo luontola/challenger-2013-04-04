@@ -14,6 +14,14 @@
 (defn parse-ints [strings]
   (map #(Integer/parseInt %) strings))
 
+(def fib-seq
+  ((fn rfib [a b]
+     (lazy-seq (cons a (rfib b (+ a b)))))
+    (bigint 0) (bigint 1)))
+
+(defn fibonacci [n]
+  (nth fib-seq n))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
@@ -22,6 +30,7 @@
       (= op "-") (str (apply - (parse-ints args)))
       (= op "palindrome?") (str (palindrome? (first args)))
       (= op "sort") (str (str/join ", " (sort (parse-ints args))))
+      (= op "fibonacci") (str (fibonacci (first (parse-ints args))))
       :else nil)))
 
 (defn make-routes []
