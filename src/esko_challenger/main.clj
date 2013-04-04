@@ -7,13 +7,22 @@
   (:require [esko-challenger.cache :as cache]
             [esko-challenger.fetcher :as fetcher])
   (:import [java.io File]
-           [java.net URL])
+           [java.net URL]
+           [org.slf4j Logger LoggerFactory])
   (:gen-class ))
 
 (defn wrap-if [handler pred wrapper & args]
   (if pred
     (apply wrapper handler args)
     handler))
+
+(defn wrap-logger [handler logger]
+  (fn [request]
+    (try
+      (handler request)
+      (catch Throwable t
+        (.warn logger (str "Uncaught exception when handling " request) t)
+        (throw t)))))
 
 (defn make-webapp [options]
   (let [answers
@@ -24,6 +33,7 @@
     (->
       (cache/make-routes answers)
       (wrap-if (:reload options) wrap-reload)
+      (wrap-logger (LoggerFactory/getLogger "http"))
       (wrap-stacktrace))))
 
 (defn run [options]
