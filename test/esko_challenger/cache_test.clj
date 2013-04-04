@@ -1,5 +1,6 @@
 (ns esko-challenger.cache-test
-  (:use clojure.test)
+  (:use clojure.test
+        [datomic.api :only [db q] :as d])
   (:require [esko-challenger.cache :as cache]
             [me.raynes.fs :as fs]))
 
@@ -31,7 +32,12 @@
       (is (nil? (cache/recall answers "unknown question"))))
 
     (testing "Recalls previously learned answers"
-      (is (= "known answer" (cache/recall answers "known question"))))))
+      (is (= "known answer" (cache/recall answers "known question"))))
+
+    (testing "New answers to old questions overwrite them"
+      (cache/learn answers "updated question" "old answer")
+      (cache/learn answers "updated question" "new answer")
+      (is (= "new answer" (cache/recall answers "updated question"))))))
 
 (deftest in-memory-answers-test
   (answers-contract cache/in-memory-answers))
@@ -41,4 +47,17 @@
     (answers-contract #(cache/filesystem-answers (unique-subdir tmpdir)))))
 
 (deftest datomic-answers-test
-  (answers-contract #(cache/datomic-answers "datomic:mem://test")))
+  (answers-contract #(cache/datomic-answers "datomic:mem://test1"))
+
+  (testing "Learning the same question many times stores it only once"
+    (let [conn-uri "datomic:mem://test2"
+          answers (cache/datomic-answers conn-uri)
+          conn (d/connect conn-uri)]
+
+      (cache/learn answers "question" "answer 1")
+      (cache/learn answers "question" "answer 2")
+      (cache/learn answers "question" "answer 2")
+
+      (let [entities (q '[:find ?c
+                          :where [?c :challenge/answer ]] (db conn))]
+        (is (= 1 (count entities)))))))
