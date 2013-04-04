@@ -11,12 +11,15 @@
   (let [word (seq (.replaceAll (.toLowerCase word) "[^a-z]" ""))]
     (= word (reverse word))))
 
+(defn parse-ints [strings]
+  (map #(Integer/parseInt %) strings))
+
 (defn answer [question]
   (let [[op & args] question]
     (cond
       (= op "ping") "pong"
-      (= op "+") (str (apply + (map #(Integer/parseInt %) args)))
-      (= op "-") (str (apply - (map #(Integer/parseInt %) args)))
+      (= op "+") (str (apply + (parse-ints args)))
+      (= op "-") (str (apply - (parse-ints args)))
       (= op "palindrome?") (str (palindrome? (first args)))
       :else nil)))
 
