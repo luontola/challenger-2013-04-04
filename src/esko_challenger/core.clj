@@ -12,6 +12,7 @@
     (cond
       (= op "ping") "pong"
       (= op "+") (str (apply + (map #(Integer/parseInt %) args)))
+      (= op "-") (str (apply - (map #(Integer/parseInt %) args)))
       :else nil)))
 
 (defn make-routes []
