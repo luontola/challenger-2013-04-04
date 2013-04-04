@@ -95,7 +95,7 @@
 (defn make-routes [answers]
   (->
     (routes
-      (POST "/" {body :body} (answer (slurp body) answers))
+      (POST "/" {body :body} (answer body answers))
       (GET "/" [] "It's me, Luigi!")
       (route/not-found "Answer Not Found"))
     (handler/site)))

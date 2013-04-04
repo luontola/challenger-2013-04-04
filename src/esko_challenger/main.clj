@@ -24,6 +24,12 @@
         (.warn logger (str "Uncaught exception when handling " request) t)
         (throw t)))))
 
+(defn wrap-string-body [handler]
+  (fn [request]
+    (let [body (slurp (:body request))
+          request (assoc request :body body)]
+      (handler request))))
+
 (defn make-webapp [options]
   (let [answers
         (if (:datomic-uri options)
@@ -34,6 +40,7 @@
       (cache/make-routes answers)
       (wrap-if (:reload options) wrap-reload)
       (wrap-logger (LoggerFactory/getLogger "http"))
+      (wrap-string-body)
       (wrap-stacktrace))))
 
 (defn run [options]
